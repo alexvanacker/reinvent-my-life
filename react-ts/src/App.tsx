@@ -29,7 +29,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="App">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
             {currentQuestion !== -1 ? (
                 <Question
                     id={Object.keys(questions)[currentQuestion]}
