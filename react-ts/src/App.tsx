@@ -1,48 +1,48 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Question from './components/Question';
 import Results from './components/Results';
+import Home from './components/Home';
 import { Question as QuestionType, Responses } from './types';
 import questionsData from './assets/global-questions.json';
 
+const questionsArray = Object.entries(questionsData).map(([id, text]) => ({ id, text }));
 const App: React.FC = () => {
-    const [questions, setQuestions] = useState<QuestionType>({});
-    const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-    const [responses, setResponses] = useState<Responses>({});
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-    useEffect(() => {
-        setQuestions(questionsData);
-    }, []);
+  const handleNext = (id: int, enfance: string, maintenant: string, navigate: NavigateFunction) => {
+    if (currentQuestionIndex === questionsArray.length - 1) {
+      // If it's the last question, navigate to the result page
+      navigate('/result');
+    } else {
+    // Move to the next question
+    setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+    }
+  };
 
-    const handleNext = (id: string, enfance: string, maintenant: string) => {
-        setResponses(prev => ({ ...prev, [id]: { enfance, maintenant } }));
-        if (currentQuestion < Object.keys(questions).length - 1) {
-            setCurrentQuestion(currentQuestion + 1);
-        } else {
-            setCurrentQuestion(-1);
-        }
-    };
+  const handlePrevious = () => {
+    // Move to the previous question
+    setCurrentQuestionIndex(prevIndex => Math.max(prevIndex - 1, 0));
+  };
 
-    const handlePrevious = () => {
-        if (currentQuestion > 0) {
-            setCurrentQuestion(currentQuestion - 1);
-        }
-    };
-
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-            {currentQuestion !== -1 ? (
-                <Question
-                    id={Object.keys(questions)[currentQuestion]}
-                    text={Object.values(questions)[currentQuestion]}
-                    onNext={handleNext}
-                    onPrevious={handlePrevious}
-                    response={responses[Object.keys(questions)[currentQuestion]]}
-                />
-            ) : (
-                <Results responses={responses} questions={questions} />
-            )}
-        </div>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/questionnaire"
+          element={
+            <Question
+              {...questionsArray[currentQuestionIndex]}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+            />
+          }
+        />
+        <Route path="/result" element={<Results />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;

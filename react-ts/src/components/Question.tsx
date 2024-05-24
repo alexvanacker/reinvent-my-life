@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Response } from '../types';
 import useLocalStorage from '../hooks/localStorage';
 
@@ -7,7 +8,6 @@ interface QuestionProps {
   text: string;
   onNext: (id: string, enfance: string, maintenant: string) => void;
   onPrevious: () => void;
-  response: Response | undefined;
 }
 
 const ratingLabels = [
@@ -22,23 +22,14 @@ const ratingLabels = [
 const getKidQuestionId = (id: string) => `global-questions-${id}-enfance`;
 const getNowQuestionId = (id: string) => `global-questions-${id}-maintenant`;
 
-const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious, response }) => {
-
+const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious }) => {
   const kidKey = getKidQuestionId(id);
   const nowKey = getNowQuestionId(id);
 
   const [enfance, setEnfance] = useLocalStorage(kidKey, '');
   const [maintenant, setMaintenant] = useLocalStorage(nowKey, '');
 
-  useEffect(() => {
-    if (response) {
-      setEnfance(response.enfance);
-      setMaintenant(response.maintenant);
-    } else if (id !== undefined) {
-        setEnfance('');
-        setMaintenant('');
-    }
-  }, [response]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Initialize state from local storage on mount
@@ -69,7 +60,7 @@ const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious, respo
     if (enfance && maintenant) {
       localStorage.setItem(kidKey, enfance);
       localStorage.setItem(nowKey, maintenant);
-      onNext(id, enfance, maintenant);
+      onNext(id, enfance, maintenant, navigate);
     } else {
       alert("Please provide ratings for both fields.");
     }
