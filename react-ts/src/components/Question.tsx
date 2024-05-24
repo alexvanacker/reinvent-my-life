@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Response } from '../types';
+import useLocalStorage from '../hooks/localStorage';
 
 interface QuestionProps {
     id: string;
@@ -18,9 +19,16 @@ const ratingLabels = [
     "Absolument vrai"
 ];
 
+const getKidQuestionId = (id:string) => `global-questions-${id}-enfance`;
+const getNowQuestionId = (id:string) => `global-questions-${id}-maintenant`;
+
 const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious, response }) => {
-    const [enfance, setEnfance] = useState<string>('');
-    const [maintenant, setMaintenant] = useState<string>('');
+
+    const kidKey = getKidQuestionId(id);
+    const nowKey = getNowQuestionId(id);
+
+    const [enfance, setEnfance] = useLocalStorage(kidKey, '');
+    const [maintenant, setMaintenant] = useLocalStorage(nowKey, '');
 
     useEffect(() => {
         if (response) {
@@ -29,13 +37,29 @@ const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious, respo
         }
     }, [response]);
 
+    useEffect(() => {
+    // Initialize state from local storage on mount
+    const storedEnfance = localStorage.getItem(kidKey);
+    const storedMaintenant = localStorage.getItem(nowKey);
+
+    if (storedEnfance) {
+      setEnfance(storedEnfance);
+    }
+    if (storedMaintenant) {
+      setMaintenant(storedMaintenant);
+    }
+  }, [kidKey, nowKey, setEnfance, setMaintenant]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (enfance && maintenant) {
-            onNext(id, enfance, maintenant);
-        } else {
-            alert("Please provide ratings for both fields.");
-        }
+      // Update local storage before navigating to the next question
+      localStorage.setItem(kidKey, enfance);
+      localStorage.setItem(nowKey, maintenant);
+      onNext(id, enfance, maintenant);
+    } else {
+      alert("Please provide ratings for both fields.");
+    }
     };
 
     return (
