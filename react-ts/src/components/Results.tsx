@@ -34,13 +34,13 @@ const Results: React.FC<ResultsProps> = ({ responses, questions }) => {
 
     return (
         <div className="bg-white p-6 rounded shadow-md max-w-4xl w-full mx-auto">
-            <h2 className="text-2xl font-semibold mb-4">Results</h2>
+            <h2 className="text-2xl font-semibold mb-4">Resultats</h2>
             <table className="min-w-full bg-white">
                 <thead>
                     <tr>
-                        <th className="py-2">Category</th>
-                        <th className="py-2">Highest Score</th>
-                        <th className="py-2">Checkmark</th>
+                        <th className="py-2">Schéma</th>
+                        <th className="py-2">Plus haute côte</th>
+                        <th className="py-2"></th>
                     </tr>
                 </thead>
                 <tbody>
