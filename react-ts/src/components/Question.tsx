@@ -66,6 +66,10 @@ const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious }) => 
     }
   };
 
+  const goHome = () => {
+    navigate("/");
+  }
+
   return (
     <div className="bg-white p-6 rounded shadow-md max-w-md w-full mx-auto">
       <div className="h-32 overflow-y-auto mb-4">
@@ -123,6 +127,13 @@ const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious }) => 
           className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Next
+        </button>
+        <button
+          type="button"
+          onClick={goHome}
+          className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+        Home
         </button>
       </div>
     </div>
