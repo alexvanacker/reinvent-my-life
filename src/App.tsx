@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, NavigateFunction } from 'react-router-dom';
 import Question from './components/Question';
 import Results from './components/Results';
 import Home from './components/Home';
-import { Question as QuestionType, Responses } from './types';
 import questionsData from './assets/global-questions.json';
 
 const questionsArray = Object.entries(questionsData).map(([id, text]) => ({ id, text }));
 const App: React.FC = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const handleNext = (id: int, enfance: string, maintenant: string, navigate: NavigateFunction) => {
+  const handleNext = (navigate: NavigateFunction) => {
     if (currentQuestionIndex === questionsArray.length - 1) {
       // If it's the last question, navigate to the result page
       navigate('/result');
@@ -29,6 +28,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/reinvent-my-life" element={<Home />} />
         <Route
           path="/questionnaire"
           element={

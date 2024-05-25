@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Response } from '../types';
+import React, { useEffect } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import useLocalStorage from '../hooks/localStorage';
 
 interface QuestionProps {
   id: string;
   text: string;
-  onNext: (id: string, enfance: string, maintenant: string) => void;
+  onNext: (navigate: NavigateFunction ) => void;
   onPrevious: () => void;
 }
 
@@ -60,7 +59,7 @@ const Question: React.FC<QuestionProps> = ({ id, text, onNext, onPrevious }) => 
     if (enfance && maintenant) {
       localStorage.setItem(kidKey, enfance);
       localStorage.setItem(nowKey, maintenant);
-      onNext(id, enfance, maintenant, navigate);
+      onNext(navigate);
     } else {
       alert("Please provide ratings for both fields.");
     }

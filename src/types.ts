@@ -1,13 +1,13 @@
 // src/types.ts
 export interface Question {
-    [key: string]: string;
+    [key: number]: string;
 }
 
 export interface Response {
-    enfance: string;
-    maintenant: string;
+    enfance: number;
+    maintenant: number;
 }
 
 export interface Responses {
-    [key: string]: Response;
+    [key: number]: Response;
 }
