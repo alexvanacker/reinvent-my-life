@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { categories } from '../assets/categories';
-import { Question as QuestionType, Responses } from '../types';
+import { Responses, Response } from '../types';
 
-interface ResultsProps {
-  questions: QuestionType;
-}
-
-const Results: React.FC<ResultsProps> = ({ questions }) => {
+const Results: React.FC = () => {
   const [responses, setResponses] = useState<Responses>({});
 
   useEffect(() => {
@@ -14,11 +10,20 @@ const Results: React.FC<ResultsProps> = ({ questions }) => {
       const loadedResponses: Responses = {};
       Object.keys(localStorage).forEach(key => {
         if (key.startsWith('global-questions-')) {
-          const [x, _, id, type] = key.split('-');
-          if (!loadedResponses[id]) {
-            loadedResponses[id] = { enfance: '', maintenant: '' };
+          const [_x, _, y, z] = key.split('-');
+          const questionId: number = parseInt(y, 10);
+          const childOrNow: string = z;
+          if (!loadedResponses[questionId]) {
+            loadedResponses[questionId] = { enfance: 0, maintenant: 0 };
           }
-          loadedResponses[id][type] = localStorage.getItem(key) || '';
+
+           // Safely convert localStorage string to number
+          const value = parseInt(localStorage.getItem(key) || '0', 10);
+
+          // Type guard to ensure childOrNow is either 'enfance' or 'maintenant'
+          if (childOrNow === 'enfance' || childOrNow === 'maintenant') {
+            loadedResponses[questionId][childOrNow] = value;
+          }
         }
       });
       setResponses(loadedResponses);
@@ -32,11 +37,11 @@ const Results: React.FC<ResultsProps> = ({ questions }) => {
       let highestScore = 0;
       let checkmark = false;
 
-      questionIds.forEach(id => {
-        const response = responses[id];
+      questionIds.forEach((_value, id: number) => {
+        const response: Response = responses[id];
         if (response) {
-          const enfanceScore = parseInt(response.enfance, 10);
-          const maintenantScore = parseInt(response.maintenant, 10);
+          const enfanceScore = response.enfance;
+          const maintenantScore = response.maintenant;
           highestScore = Math.max(highestScore, enfanceScore, maintenantScore);
         }
       });
